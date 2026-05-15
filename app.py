@@ -62,78 +62,6 @@ html, body, [class*="css"] {
     text-transform: uppercase;
 }
 
-/* ── HERO BAND ── */
-.hero-band {
-    background: #f5f2eb;
-    padding: 32px 40px 0;
-    border-bottom: 1px solid #ddd8cc;
-}
-
-.hero-eyebrow {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.65rem;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: #888;
-    margin-bottom: 6px;
-}
-
-.hero-h1 {
-    font-family: 'Bebas Neue', cursive;
-    font-size: 3.6rem;
-    line-height: 1;
-    color: #1a1a1a;
-    letter-spacing: 1px;
-    margin: 0;
-}
-
-.hero-h1 em {
-    color: #c8a45a;
-    font-style: normal;
-}
-
-.hero-desc {
-    font-size: 0.82rem;
-    color: #666;
-    margin: 10px 0 0;
-    max-width: 600px;
-    line-height: 1.6;
-}
-
-/* ── STATS ROW ── */
-.stats-strip {
-    display: flex;
-    gap: 0;
-    margin-top: 24px;
-    border-top: 1px solid #ddd8cc;
-}
-
-.stat-block {
-    flex: 1;
-    padding: 14px 20px;
-    border-right: 1px solid #ddd8cc;
-}
-
-.stat-block:last-child { border-right: none; }
-
-.stat-lbl {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.6rem;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: #999;
-    margin-bottom: 4px;
-}
-
-.stat-val {
-    font-family: 'Bebas Neue', cursive;
-    font-size: 1.55rem;
-    color: #1a1a1a;
-    line-height: 1;
-}
-
-.stat-val.gold { color: #c8a45a; }
-
 /* ── MAIN BODY ── */
 .main-body {
     padding: 32px 40px;
@@ -523,49 +451,36 @@ n_tr = stats.get('n_train', 125)
 # ── TOP BAR ───────────────────────────────────────────────────────────────────
 st.markdown(f"""
 <div class="topbar">
-    <div class="topbar-brand">AUTO<span>PRICE</span></div>
-    <div class="topbar-tag">Final Project · Matakuliah Sains Data</div>
-</div>
-""", unsafe_allow_html=True)
-
-# ── HERO BAND ─────────────────────────────────────────────────────────────────
-st.markdown(f"""
-<div class="hero-band">
-    <div class="hero-eyebrow">Sistem Prediksi Berbasis Machine Learning</div>
-    <div class="hero-h1">Prediksi<br>Harga <em>Mobil</em></div>
-    <div class="hero-desc">
-        Masukkan spesifikasi kendaraan dan dapatkan estimasi harga instan menggunakan
-        model Linear Regression yang dilatih dari dataset Car Sales.
+    <div style="display:flex; align-items:center; gap:32px;">
+        <div class="topbar-brand">AUTO<span>PRICE</span></div>
+        <div class="topbar-tag" style="color:#666;">Sistem Prediksi Harga Mobil · Final Project Sains Data</div>
     </div>
-    <div class="stats-strip">
-        <div class="stat-block">
-            <div class="stat-lbl">Algoritma</div>
-            <div class="stat-val">LIN.REG</div>
+    <div style="display:flex; gap:24px; align-items:center;">
+        <div style="text-align:center;">
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:0.55rem;letter-spacing:1px;color:#666;text-transform:uppercase;">Algoritma</div>
+            <div style="font-family:'Bebas Neue',cursive;font-size:1.1rem;color:#f5f2eb;letter-spacing:1px;">Lin.Reg</div>
         </div>
-        <div class="stat-block">
-            <div class="stat-lbl">R² Score</div>
-            <div class="stat-val gold">{r2}</div>
+        <div style="width:1px;height:32px;background:#333;"></div>
+        <div style="text-align:center;">
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:0.55rem;letter-spacing:1px;color:#666;text-transform:uppercase;">R² Score</div>
+            <div style="font-family:'Bebas Neue',cursive;font-size:1.1rem;color:#c8a45a;letter-spacing:1px;">{r2}</div>
         </div>
-        <div class="stat-block">
-            <div class="stat-lbl">RMSE</div>
-            <div class="stat-val">${rmse}K</div>
+        <div style="width:1px;height:32px;background:#333;"></div>
+        <div style="text-align:center;">
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:0.55rem;letter-spacing:1px;color:#666;text-transform:uppercase;">RMSE</div>
+            <div style="font-family:'Bebas Neue',cursive;font-size:1.1rem;color:#f5f2eb;letter-spacing:1px;">${rmse}K</div>
         </div>
-        <div class="stat-block">
-            <div class="stat-lbl">Data Latih</div>
-            <div class="stat-val">{n_tr}</div>
-        </div>
-        <div class="stat-block">
-            <div class="stat-lbl">Fitur Input</div>
-            <div class="stat-val">7</div>
+        <div style="width:1px;height:32px;background:#333;"></div>
+        <div style="text-align:center;">
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:0.55rem;letter-spacing:1px;color:#666;text-transform:uppercase;">Data Latih</div>
+            <div style="font-family:'Bebas Neue',cursive;font-size:1.1rem;color:#f5f2eb;letter-spacing:1px;">{n_tr} baris</div>
         </div>
     </div>
 </div>
 """, unsafe_allow_html=True)
-
-# ── SPACER ────────────────────────────────────────────────────────────────────
-st.markdown("<div style='height:28px'></div>", unsafe_allow_html=True)
 
 # ── LAYOUT ────────────────────────────────────────────────────────────────────
+st.markdown("<div style='height:20px'></div>", unsafe_allow_html=True)
 col_left, col_right = st.columns([1.5, 1], gap="medium")
 
 with col_left:

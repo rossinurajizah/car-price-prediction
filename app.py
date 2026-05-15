@@ -143,6 +143,10 @@ html, body, [class*="css"] {
 .panel-body { padding: 22px; }
 
 /* ── INPUT LABELS ── */
+.stNumberInput {
+    padding: 0 22px;
+}
+
 .stNumberInput label {
     font-family: 'IBM Plex Mono', monospace !important;
     font-size: 0.62rem !important;
@@ -174,6 +178,7 @@ html, body, [class*="css"] {
     gap: 8px;
     margin-top: 3px;
     margin-bottom: 10px;
+    padding: 0 22px;
 }
 
 .corr-track {

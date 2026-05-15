@@ -43,23 +43,62 @@ html, body, [class*="css"] {
     border-bottom: 3px solid #c8a45a;
 }
 
+.topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
 .topbar-brand {
     font-family: 'Bebas Neue', cursive;
     font-size: 1.9rem;
     color: #f5f2eb;
     letter-spacing: 2px;
+    white-space: nowrap;
 }
 
-.topbar-brand span {
-    color: #c8a45a;
-}
+.topbar-brand span { color: #c8a45a; }
 
 .topbar-tag {
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.7rem;
-    color: #888;
+    font-size: 0.62rem;
+    color: #555;
     letter-spacing: 1px;
     text-transform: uppercase;
+    line-height: 1.4;
+}
+
+.topbar-stats {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.topbar-stat {
+    text-align: center;
+}
+
+.topbar-stat-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.52rem;
+    letter-spacing: 1px;
+    color: #555;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+}
+
+.topbar-stat-val {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.1rem;
+    color: #f5f2eb;
+    letter-spacing: 1px;
+    line-height: 1;
+}
+
+.topbar-divider {
+    width: 1px;
+    height: 28px;
+    background: #333;
 }
 
 /* ── MAIN BODY ── */
@@ -455,56 +494,72 @@ div[data-testid="column"] { padding: 0 6px; }
 @media (max-width: 768px) {
     .block-container { padding: 0 !important; }
 
-    /* Topbar: stack vertically */
+    /* Topbar: stack brand atas, stats bawah sebagai 2x2 grid */
     .topbar {
         flex-direction: column;
         align-items: flex-start;
-        gap: 12px;
-        padding: 14px 16px;
+        gap: 14px;
+        padding: 12px 16px;
     }
-    .topbar > div:last-child {
+
+    .topbar-left {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+
+    .topbar-tag { display: none; }
+
+    .topbar-stats {
         display: grid !important;
         grid-template-columns: 1fr 1fr;
-        gap: 10px;
+        gap: 0;
         width: 100%;
+        border: 1px solid #2a2a2a;
     }
-    .topbar > div:last-child > div[style*="width:1px"] {
-        display: none !important;
+
+    .topbar-divider { display: none; }
+
+    .topbar-stat {
+        padding: 10px 14px;
+        border-right: 1px solid #2a2a2a;
+        border-bottom: 1px solid #2a2a2a;
+        text-align: left;
     }
+
+    .topbar-stat:nth-child(4),
+    .topbar-stat:nth-child(6) { border-right: none; }
+
+    .topbar-stat:nth-child(5),
+    .topbar-stat:nth-child(6) { border-bottom: none; }
+
+    .topbar-stat-val { font-size: 1.3rem; }
 
     /* Panels full width */
     .panel { margin: 0 0 12px 0; }
     .panel-body { padding: 12px; }
 
-    /* Input grid: 1 kolom di mobile */
     div[data-testid="column"] { padding: 0 2px; }
 
-    /* Result hero font lebih kecil */
     .result-usd { font-size: 2.6rem !important; }
     .result-idr { font-size: 0.65rem !important; }
 
-    /* Spec grid: 1 kolom */
     .spec-grid { grid-template-columns: 1fr 1fr !important; gap: 6px !important; }
     .spec-list { padding: 0 12px 12px !important; }
     .seg-bar { margin: 12px !important; }
 
-    /* Identity */
     .identity { margin: 0 !important; }
     .identity-meta { flex-wrap: wrap; gap: 12px; }
 
-    /* Model info */
-    .model-info { margin: 0 0 0 0 !important; }
+    .model-info { margin: 0 !important; }
 
-    /* Buttons */
     .stButton button { font-size: 0.72rem !important; padding: 0.6rem !important; }
-
-    /* Topbar brand smaller */
     .topbar-brand { font-size: 1.5rem !important; }
 }
 
 @media (max-width: 480px) {
     .result-usd { font-size: 2rem !important; }
-    .spec-grid { grid-template-columns: 1fr !important; }
+    .spec-grid { grid-template-columns: 1fr 1fr !important; }
     .identity-meta { gap: 8px; }
     .mstat-val { font-size: 1rem !important; }
 }
@@ -588,29 +643,29 @@ st.markdown("""
 # ── TOP BAR ───────────────────────────────────────────────────────────────────
 st.markdown(f"""
 <div class="topbar">
-    <div style="display:flex; align-items:center; gap:32px;">
+    <div class="topbar-left">
         <div class="topbar-brand">AUTO<span>PRICE</span></div>
-        <div class="topbar-tag" style="color:#666;">Sistem Prediksi Harga Mobil · Final Project Sains Data</div>
+        <div class="topbar-tag">Sistem Prediksi Harga Mobil · Final Project Sains Data</div>
     </div>
-    <div style="display:flex; gap:24px; align-items:center;">
-        <div style="text-align:center;">
-            <div style="font-family:'IBM Plex Mono',monospace;font-size:0.55rem;letter-spacing:1px;color:#666;text-transform:uppercase;">Algoritma</div>
-            <div style="font-family:'Bebas Neue',cursive;font-size:1.1rem;color:#f5f2eb;letter-spacing:1px;">Lin.Reg</div>
+    <div class="topbar-stats">
+        <div class="topbar-stat">
+            <div class="topbar-stat-label">Algoritma</div>
+            <div class="topbar-stat-val">Lin.Reg</div>
         </div>
-        <div style="width:1px;height:32px;background:#333;"></div>
-        <div style="text-align:center;">
-            <div style="font-family:'IBM Plex Mono',monospace;font-size:0.55rem;letter-spacing:1px;color:#666;text-transform:uppercase;">R² Score</div>
-            <div style="font-family:'Bebas Neue',cursive;font-size:1.1rem;color:#c8a45a;letter-spacing:1px;">{r2}</div>
+        <div class="topbar-divider"></div>
+        <div class="topbar-stat">
+            <div class="topbar-stat-label">R² Score</div>
+            <div class="topbar-stat-val" style="color:#c8a45a;">{r2}</div>
         </div>
-        <div style="width:1px;height:32px;background:#333;"></div>
-        <div style="text-align:center;">
-            <div style="font-family:'IBM Plex Mono',monospace;font-size:0.55rem;letter-spacing:1px;color:#666;text-transform:uppercase;">RMSE</div>
-            <div style="font-family:'Bebas Neue',cursive;font-size:1.1rem;color:#f5f2eb;letter-spacing:1px;">${rmse}K</div>
+        <div class="topbar-divider"></div>
+        <div class="topbar-stat">
+            <div class="topbar-stat-label">RMSE</div>
+            <div class="topbar-stat-val">${rmse}K</div>
         </div>
-        <div style="width:1px;height:32px;background:#333;"></div>
-        <div style="text-align:center;">
-            <div style="font-family:'IBM Plex Mono',monospace;font-size:0.55rem;letter-spacing:1px;color:#666;text-transform:uppercase;">Data Latih</div>
-            <div style="font-family:'Bebas Neue',cursive;font-size:1.1rem;color:#f5f2eb;letter-spacing:1px;">{n_tr} baris</div>
+        <div class="topbar-divider"></div>
+        <div class="topbar-stat">
+            <div class="topbar-stat-label">Data Latih</div>
+            <div class="topbar-stat-val">{n_tr} baris</div>
         </div>
     </div>
 </div>

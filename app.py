@@ -295,22 +295,41 @@ html, body, [class*="css"] {
 
 /* ── IDENTITY ── */
 .identity {
-    margin: 0 22px 22px;
-    padding: 16px;
-    border: 1px solid #ddd8cc;
-    background: #f9f7f3;
+    margin: 0 22px 0;
+    background: #1a1a1a;
+    padding: 18px 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.identity::before {
+    content: 'DEVELOPER';
+    position: absolute;
+    right: -8px;
+    top: 50%;
+    transform: translateY(-50%) rotate(90deg);
+    font-family: 'Bebas Neue', cursive;
+    font-size: 3.5rem;
+    color: rgba(255,255,255,0.04);
+    letter-spacing: 4px;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+.identity-top {
     display: flex;
     align-items: center;
     gap: 14px;
+    margin-bottom: 12px;
 }
 
 .identity-monogram {
-    width: 40px;
-    height: 40px;
-    background: #1a1a1a;
+    width: 44px;
+    height: 44px;
+    border: 1px solid #c8a45a;
     color: #c8a45a;
     font-family: 'Bebas Neue', cursive;
-    font-size: 1.2rem;
+    font-size: 1.15rem;
     letter-spacing: 1px;
     display: flex;
     align-items: center;
@@ -319,40 +338,96 @@ html, body, [class*="css"] {
 }
 
 .identity-name {
-    font-weight: 600;
-    font-size: 0.88rem;
-    color: #1a1a1a;
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.3rem;
+    letter-spacing: 1.5px;
+    color: #f5f2eb;
+    line-height: 1;
 }
 
 .identity-npm {
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.65rem;
-    color: #888;
-    margin-top: 2px;
+    font-size: 0.6rem;
+    color: #555;
+    margin-top: 4px;
+    letter-spacing: 1px;
+}
+
+.identity-divider {
+    height: 1px;
+    background: linear-gradient(90deg, #c8a45a, transparent);
+    margin-bottom: 12px;
+}
+
+.identity-meta {
+    display: flex;
+    gap: 20px;
+}
+
+.identity-meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.identity-meta-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.52rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #444;
+}
+
+.identity-meta-val {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    color: #c8a45a;
 }
 
 /* ── MODEL INFO ── */
 .model-info {
     margin: 0 22px 22px;
-    padding: 16px;
+    background: #f9f7f3;
     border: 1px solid #ddd8cc;
-    border-left: 3px solid #c8a45a;
-    background: #fdfcf9;
+    border-top: none;
+    padding: 14px 18px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0;
 }
 
-.model-info p {
-    font-size: 0.78rem;
-    color: #555;
-    line-height: 1.65;
-    margin: 0;
+.mstat {
+    padding: 10px 12px;
+    border-right: 1px solid #ddd8cc;
+    text-align: center;
 }
 
-.model-info strong {
+.mstat:last-child { border-right: none; }
+
+.mstat-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.52rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #aaa;
+    margin-bottom: 4px;
+}
+
+.mstat-val {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.25rem;
     color: #1a1a1a;
-    font-weight: 600;
+    line-height: 1;
 }
 
-.model-info .hi { color: #c8a45a; font-weight: 600; }
+.mstat-val.gold { color: #c8a45a; }
+
+.mstat-sub {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.55rem;
+    color: #bbb;
+    margin-top: 2px;
+}
 
 /* ── PLACEHOLDER ── */
 .placeholder {
@@ -567,6 +642,51 @@ with col_right:
         r2_str  = "{:.1f}%".format(r2 * 100)
         rmse_str = "${:.3f}K".format(rmse)
 
+        # shared identity + model stats block
+        identity_block = (
+            '<div class="identity">'
+              '<div class="identity-top">'
+                '<div class="identity-monogram">RNA</div>'
+                '<div>'
+                  '<div class="identity-name">Rossi Nur Ajizah</div>'
+                  '<div class="identity-npm">NPM · 237006003</div>'
+                '</div>'
+              '</div>'
+              '<div class="identity-divider"></div>'
+              '<div class="identity-meta">'
+                '<div class="identity-meta-item">'
+                  '<span class="identity-meta-label">Matakuliah</span>'
+                  '<span class="identity-meta-val">Sains Data</span>'
+                '</div>'
+                '<div class="identity-meta-item">'
+                  '<span class="identity-meta-label">Metode</span>'
+                  '<span class="identity-meta-val">Lin. Regression</span>'
+                '</div>'
+                '<div class="identity-meta-item">'
+                  '<span class="identity-meta-label">Status</span>'
+                  '<span class="identity-meta-val">Final Project</span>'
+                '</div>'
+              '</div>'
+            '</div>'
+            '<div class="model-info">'
+              '<div class="mstat">'
+                '<div class="mstat-label">R² Score</div>'
+                '<div class="mstat-val gold">' + r2_str + '</div>'
+                '<div class="mstat-sub">akurasi model</div>'
+              '</div>'
+              '<div class="mstat">'
+                '<div class="mstat-label">RMSE</div>'
+                '<div class="mstat-val">' + rmse_str + '</div>'
+                '<div class="mstat-sub">rata-rata error</div>'
+              '</div>'
+              '<div class="mstat">'
+                '<div class="mstat-label">Top Feature</div>'
+                '<div class="mstat-val" style="font-size:0.85rem;font-family:\'Space Grotesk\',sans-serif;font-weight:700;">HP</div>'
+                '<div class="mstat-sub">r = 0.837</div>'
+              '</div>'
+            '</div>'
+        )
+
         html = (
             '<div class="panel">'
               '<div class="panel-header">'
@@ -591,27 +711,58 @@ with col_right:
                 '<div class="spec-title">Ringkasan Spesifikasi</div>'
                 '<div class="spec-grid">' + specs_rows + '</div>'
               '</div>'
-              '<div style="border-top:1px solid #ddd8cc;margin:8px 22px 0"></div>'
-              '<div class="identity" style="margin:16px 22px;">'
-                '<div class="identity-monogram">RNA</div>'
-                '<div>'
-                  '<div class="identity-name">Rossi Nur Ajizah</div>'
-                  '<div class="identity-npm">NPM : 237006003</div>'
-                '</div>'
-              '</div>'
-              '<div class="model-info" style="margin:0 22px 22px;">'
-                '<p>Model <strong>Linear Regression</strong> dilatih dari dataset <em>Car_sales.xls</em>. '
-                'Variabel paling berpengaruh: <span class="hi">Horsepower (r = 0.837)</span>. '
-                'R² = <strong>' + r2_str + '</strong>, RMSE = <strong>' + rmse_str + '</strong>.</p>'
-              '</div>'
+              + identity_block +
             '</div>'
         )
         st.markdown(html, unsafe_allow_html=True)
 
     else:
-        usd_placeholder = "${:,.0f}".format(0)
         r2_str  = "{:.1f}%".format(r2 * 100)
         rmse_str = "${:.3f}K".format(rmse)
+
+        identity_block = (
+            '<div class="identity">'
+              '<div class="identity-top">'
+                '<div class="identity-monogram">RNA</div>'
+                '<div>'
+                  '<div class="identity-name">Rossi Nur Ajizah</div>'
+                  '<div class="identity-npm">NPM · 237006003</div>'
+                '</div>'
+              '</div>'
+              '<div class="identity-divider"></div>'
+              '<div class="identity-meta">'
+                '<div class="identity-meta-item">'
+                  '<span class="identity-meta-label">Matakuliah</span>'
+                  '<span class="identity-meta-val">Sains Data</span>'
+                '</div>'
+                '<div class="identity-meta-item">'
+                  '<span class="identity-meta-label">Metode</span>'
+                  '<span class="identity-meta-val">Lin. Regression</span>'
+                '</div>'
+                '<div class="identity-meta-item">'
+                  '<span class="identity-meta-label">Status</span>'
+                  '<span class="identity-meta-val">Final Project</span>'
+                '</div>'
+              '</div>'
+            '</div>'
+            '<div class="model-info">'
+              '<div class="mstat">'
+                '<div class="mstat-label">R² Score</div>'
+                '<div class="mstat-val gold">' + r2_str + '</div>'
+                '<div class="mstat-sub">akurasi model</div>'
+              '</div>'
+              '<div class="mstat">'
+                '<div class="mstat-label">RMSE</div>'
+                '<div class="mstat-val">' + rmse_str + '</div>'
+                '<div class="mstat-sub">rata-rata error</div>'
+              '</div>'
+              '<div class="mstat">'
+                '<div class="mstat-label">Top Feature</div>'
+                '<div class="mstat-val" style="font-size:0.85rem;font-family:\'Space Grotesk\',sans-serif;font-weight:700;">HP</div>'
+                '<div class="mstat-sub">r = 0.837</div>'
+              '</div>'
+            '</div>'
+        )
 
         html = (
             '<div class="panel">'
@@ -626,19 +777,7 @@ with col_right:
                   'lalu klik <strong>Hitung Harga Mobil</strong>'
                 '</div>'
               '</div>'
-              '<div style="border-top:1px solid #ddd8cc;margin:8px 22px 0"></div>'
-              '<div class="identity" style="margin:16px 22px;">'
-                '<div class="identity-monogram">RNA</div>'
-                '<div>'
-                  '<div class="identity-name">Rossi Nur Ajizah</div>'
-                  '<div class="identity-npm">NPM : 237006003</div>'
-                '</div>'
-              '</div>'
-              '<div class="model-info" style="margin:0 22px 22px;">'
-                '<p>Model <strong>Linear Regression</strong> dilatih dari dataset <em>Car_sales.xls</em>. '
-                'Variabel paling berpengaruh: <span class="hi">Horsepower (r = 0.837)</span>. '
-                'R² = <strong>' + r2_str + '</strong>, RMSE = <strong>' + rmse_str + '</strong>.</p>'
-              '</div>'
+              + identity_block +
             '</div>'
         )
         st.markdown(html, unsafe_allow_html=True)

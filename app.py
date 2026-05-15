@@ -31,7 +31,7 @@ html, body, [class*="css"] {
 }
 
 #MainMenu, footer, header { visibility: hidden; }
-.block-container { padding: 0; max-width: 100%; }
+.block-container { padding: 0 2rem 2rem !important; max-width: 100%; }
 
 /* ── TOPBAR ── */
 .topbar {
@@ -674,6 +674,8 @@ st.markdown(f"""
 # ── LAYOUT ────────────────────────────────────────────────────────────────────
 st.markdown("<div style='height:20px'></div>", unsafe_allow_html=True)
 col_left, col_right = st.columns([1.5, 1], gap="medium")
+
+st.markdown("<style> .block-container { padding: 0 2rem 2rem !important; } </style>", unsafe_allow_html=True)
 
 with col_left:
     st.markdown("""

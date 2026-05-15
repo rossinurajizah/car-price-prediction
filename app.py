@@ -621,6 +621,7 @@ with col_left:
         st.rerun()
 
 with col_right:
+    # Hitung prediksi dulu di luar HTML
     if hitung:
         X_input  = pd.DataFrame([inputs])
         pred_k   = float(model.predict(X_input)[0])
@@ -634,66 +635,95 @@ with col_right:
         else:
             seg_label, seg_pct = "Premium", 85
 
-        specs_html = ""
+        # Build specs rows
+        specs_rows = ""
         for key, meta in FEATURE_META.items():
-            specs_html += f"""
-            <div class="spec-item">
-                <div class="spec-k">{meta['label']}</div>
-                <div class="spec-v">{inputs[key]:.2f} <span style="font-size:0.65rem;color:#aaa;font-weight:400">{meta['unit']}</span></div>
-            </div>"""
+            val_fmt = f"{inputs[key]:.2f}"
+            specs_rows += (
+                '<div class="spec-item">'
+                '<div class="spec-k">' + meta['label'] + '</div>'
+                '<div class="spec-v">' + val_fmt + ' <span style="font-size:0.65rem;color:#aaa;font-weight:400">' + meta['unit'] + '</span></div>'
+                '</div>'
+            )
 
-        result_block = f"""
-            <div class="result-hero">
-                <div class="result-eyebrow">Estimasi Harga Mobil</div>
-                <div class="result-usd">${pred_usd:,.0f}</div>
-                <div class="result-idr">≈ Rp {pred_idr:,.0f}</div>
-            </div>
-            <div class="seg-bar">
-                <div class="seg-label">Segmen Harga — {seg_label}</div>
-                <div class="seg-track">
-                    <div class="seg-indicator" style="left:{seg_pct}%"></div>
-                </div>
-                <div class="seg-labels">
-                    <span>Budget</span><span>Menengah</span><span>Premium</span>
-                </div>
-            </div>
-            <div class="spec-list">
-                <div class="spec-title">Ringkasan Spesifikasi</div>
-                <div class="spec-grid">{specs_html}</div>
-            </div>"""
+        # Build full right panel HTML (no nested f-strings)
+        usd_str = "${:,.0f}".format(pred_usd)
+        idr_str = "Rp {:,.0f}".format(pred_idr)
+        r2_str  = "{:.1f}%".format(r2 * 100)
+        rmse_str = "${:.3f}K".format(rmse)
+
+        html = (
+            '<div class="panel">'
+              '<div class="panel-header">'
+                '<span class="panel-title">$ Perkiraan Harga</span>'
+                '<span class="panel-number">02</span>'
+              '</div>'
+              '<div class="result-hero">'
+                '<div class="result-eyebrow">Estimasi Harga Mobil</div>'
+                '<div class="result-usd">' + usd_str + '</div>'
+                '<div class="result-idr">≈ ' + idr_str + '</div>'
+              '</div>'
+              '<div class="seg-bar">'
+                '<div class="seg-label">Segmen Harga — ' + seg_label + '</div>'
+                '<div class="seg-track">'
+                  '<div class="seg-indicator" style="left:' + str(seg_pct) + '%"></div>'
+                '</div>'
+                '<div class="seg-labels">'
+                  '<span>Budget</span><span>Menengah</span><span>Premium</span>'
+                '</div>'
+              '</div>'
+              '<div class="spec-list">'
+                '<div class="spec-title">Ringkasan Spesifikasi</div>'
+                '<div class="spec-grid">' + specs_rows + '</div>'
+              '</div>'
+              '<div style="border-top:1px solid #ddd8cc;margin:8px 22px 0"></div>'
+              '<div class="identity" style="margin:16px 22px;">'
+                '<div class="identity-monogram">RNA</div>'
+                '<div>'
+                  '<div class="identity-name">Rossi Nur Ajizah</div>'
+                  '<div class="identity-npm">NPM : 237006003</div>'
+                '</div>'
+              '</div>'
+              '<div class="model-info" style="margin:0 22px 22px;">'
+                '<p>Model <strong>Linear Regression</strong> dilatih dari dataset <em>Car_sales.xls</em>. '
+                'Variabel paling berpengaruh: <span class="hi">Horsepower (r = 0.837)</span>. '
+                'R² = <strong>' + r2_str + '</strong>, RMSE = <strong>' + rmse_str + '</strong>.</p>'
+              '</div>'
+            '</div>'
+        )
+        st.markdown(html, unsafe_allow_html=True)
+
     else:
-        result_block = """
-            <div class="placeholder">
-                <div class="placeholder-icon">◈</div>
-                <div class="placeholder-text">
-                    Masukkan spesifikasi kendaraan<br>
-                    lalu klik <strong>Hitung Harga Mobil</strong>
-                </div>
-            </div>"""
+        usd_placeholder = "${:,.0f}".format(0)
+        r2_str  = "{:.1f}%".format(r2 * 100)
+        rmse_str = "${:.3f}K".format(rmse)
 
-    st.markdown(f"""
-    <div class="panel" style="display:flex; flex-direction:column;">
-        <div class="panel-header">
-            <span class="panel-title">$ Perkiraan Harga</span>
-            <span class="panel-number">02</span>
-        </div>
-        {result_block}
-        <div style="flex:1"></div>
-        <div style="border-top:1px solid #ddd8cc; margin:0 22px"></div>
-        <div class="identity" style="margin:16px 22px;">
-            <div class="identity-monogram">RNA</div>
-            <div>
-                <div class="identity-name">Rossi Nur Ajizah</div>
-                <div class="identity-npm">NPM : 237006003</div>
-            </div>
-        </div>
-        <div class="model-info" style="margin:0 22px 22px;">
-            <p>
-                Model <strong>Linear Regression</strong> dilatih dari dataset
-                <em>Car_sales.xls</em>. Variabel paling berpengaruh:
-                <span class="hi">Horsepower (r = 0.837)</span>.
-                R² = <strong>{r2*100:.1f}%</strong>, RMSE = <strong>${rmse}K</strong>.
-            </p>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+        html = (
+            '<div class="panel">'
+              '<div class="panel-header">'
+                '<span class="panel-title">$ Perkiraan Harga</span>'
+                '<span class="panel-number">02</span>'
+              '</div>'
+              '<div class="placeholder">'
+                '<div class="placeholder-icon">◈</div>'
+                '<div class="placeholder-text">'
+                  'Masukkan spesifikasi kendaraan<br>'
+                  'lalu klik <strong>Hitung Harga Mobil</strong>'
+                '</div>'
+              '</div>'
+              '<div style="border-top:1px solid #ddd8cc;margin:8px 22px 0"></div>'
+              '<div class="identity" style="margin:16px 22px;">'
+                '<div class="identity-monogram">RNA</div>'
+                '<div>'
+                  '<div class="identity-name">Rossi Nur Ajizah</div>'
+                  '<div class="identity-npm">NPM : 237006003</div>'
+                '</div>'
+              '</div>'
+              '<div class="model-info" style="margin:0 22px 22px;">'
+                '<p>Model <strong>Linear Regression</strong> dilatih dari dataset <em>Car_sales.xls</em>. '
+                'Variabel paling berpengaruh: <span class="hi">Horsepower (r = 0.837)</span>. '
+                'R² = <strong>' + r2_str + '</strong>, RMSE = <strong>' + rmse_str + '</strong>.</p>'
+              '</div>'
+            '</div>'
+        )
+        st.markdown(html, unsafe_allow_html=True)

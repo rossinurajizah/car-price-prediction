@@ -147,6 +147,8 @@ html, body, [class*="css"] {
     background: #fff;
     border: 1px solid #ddd8cc;
     border-radius: 2px;
+    height: 100%;
+    box-sizing: border-box;
 }
 
 .panel-header {
@@ -619,15 +621,12 @@ with col_left:
         st.rerun()
 
 with col_right:
-    st.markdown("<div style='margin:0 10px'>", unsafe_allow_html=True)
-
     if hitung:
         X_input  = pd.DataFrame([inputs])
         pred_k   = float(model.predict(X_input)[0])
         pred_usd = pred_k * 1000
         pred_idr = pred_usd * 17_603
 
-        # Segment
         if pred_usd < 15000:
             seg_label, seg_pct = "Budget", 12
         elif pred_usd < 35000:
@@ -643,12 +642,7 @@ with col_right:
                 <div class="spec-v">{inputs[key]:.2f} <span style="font-size:0.65rem;color:#aaa;font-weight:400">{meta['unit']}</span></div>
             </div>"""
 
-        st.markdown(f"""
-        <div class="panel">
-            <div class="panel-header">
-                <span class="panel-title">$ Perkiraan Harga</span>
-                <span class="panel-number">02</span>
-            </div>
+        result_block = f"""
             <div class="result-hero">
                 <div class="result-eyebrow">Estimasi Harga Mobil</div>
                 <div class="result-usd">${pred_usd:,.0f}</div>
@@ -666,54 +660,40 @@ with col_right:
             <div class="spec-list">
                 <div class="spec-title">Ringkasan Spesifikasi</div>
                 <div class="spec-grid">{specs_html}</div>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-
-        st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
-        st.success(f"✅ Prediksi berhasil — ${pred_usd:,.0f} · Rp {pred_idr:,.0f}")
-
+            </div>"""
     else:
-        st.markdown("""
-        <div class="panel">
-            <div class="panel-header">
-                <span class="panel-title">$ Perkiraan Harga</span>
-                <span class="panel-number">02</span>
-            </div>
+        result_block = """
             <div class="placeholder">
-                <div class="placeholder-icon">🚗</div>
+                <div class="placeholder-icon">◈</div>
                 <div class="placeholder-text">
                     Masukkan spesifikasi kendaraan<br>
                     lalu klik <strong>Hitung Harga Mobil</strong>
                 </div>
+            </div>"""
+
+    st.markdown(f"""
+    <div class="panel" style="display:flex; flex-direction:column;">
+        <div class="panel-header">
+            <span class="panel-title">$ Perkiraan Harga</span>
+            <span class="panel-number">02</span>
+        </div>
+        {result_block}
+        <div style="flex:1"></div>
+        <div style="border-top:1px solid #ddd8cc; margin:0 22px"></div>
+        <div class="identity" style="margin:16px 22px;">
+            <div class="identity-monogram">RNA</div>
+            <div>
+                <div class="identity-name">Rossi Nur Ajizah</div>
+                <div class="identity-npm">NPM : 237006003</div>
             </div>
         </div>
-        """, unsafe_allow_html=True)
-
-    # Identity
-    st.markdown("""
-    <div style="height:12px"></div>
-    <div class="identity">
-        <div class="identity-monogram">RNA</div>
-        <div>
-            <div class="identity-name">Rossi Nur Ajizah</div>
-            <div class="identity-npm">NPM : 237006003</div>
+        <div class="model-info" style="margin:0 22px 22px;">
+            <p>
+                Model <strong>Linear Regression</strong> dilatih dari dataset
+                <em>Car_sales.xls</em>. Variabel paling berpengaruh:
+                <span class="hi">Horsepower (r = 0.837)</span>.
+                R² = <strong>{r2*100:.1f}%</strong>, RMSE = <strong>${rmse}K</strong>.
+            </p>
         </div>
     </div>
     """, unsafe_allow_html=True)
-
-    # Model info
-    st.markdown(f"""
-    <div class="model-info">
-        <p>
-            Model <strong>Linear Regression</strong> dilatih dari dataset
-            <em>Car_sales.xls</em>.<br><br>
-            Variabel paling berpengaruh:
-            <span class="hi">Horsepower (r = 0.837)</span>.<br><br>
-            <span style="color:#888">R² = <strong>{r2*100:.1f}%</strong> variasi harga dijelaskan model ini.
-            RMSE = <strong>${rmse}K</strong>.</span>
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
-
-    st.markdown("</div>", unsafe_allow_html=True)

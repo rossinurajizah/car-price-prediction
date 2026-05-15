@@ -10,7 +10,7 @@ from sklearn.metrics import mean_squared_error, r2_score
 
 # ── Page Config ───────────────────────────────────────────────────────────────
 st.set_page_config(
-    page_title="AutoPrice — Prediksi Harga Mobil",
+    page_title="Car Price Prediction — Prediksi Harga Mobil",
     page_icon="📊",
     layout="wide",
     initial_sidebar_state="collapsed"
@@ -644,7 +644,7 @@ st.markdown("""
 st.markdown(f"""
 <div class="topbar">
     <div class="topbar-left">
-        <div class="topbar-brand">AUTO<span>PRICE</span></div>
+        <div class="topbar-brand">CAR PRICE<span> PREDICTION</span></div>
         <div class="topbar-tag">Sistem Prediksi Harga Mobil · Final Project Sains Data</div>
     </div>
     <div class="topbar-stats">

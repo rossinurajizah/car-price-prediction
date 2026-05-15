@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import pickle
+import joblib
 import os
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
@@ -269,11 +270,34 @@ KORRELASI = {'Engine_size':0.626,'Horsepower':0.837,'Wheelbase':0.489,'Width':0.
 def load_model():
     pkl_path = os.path.join(os.path.dirname(__file__), 'model.pkl')
     if os.path.exists(pkl_path):
-        with open(pkl_path, 'rb') as f:
-            d = pickle.load(f)
-        return d['model'], d.get('stats', {})
+        # Support joblib (dari Colab) maupun pickle
+        try:
+            d = joblib.load(pkl_path)
+        except Exception:
+            with open(pkl_path, 'rb') as f:
+                d = pickle.load(f)
+        # Hitung stats dari model yang sudah ada
+        csv_path = os.path.join(os.path.dirname(__file__), 'Car_sales.xls')
+        df = pd.read_csv(csv_path)
+        df.dropna(how='all', inplace=True)
+        for col in df.select_dtypes(include=[np.number]).columns:
+            df[col] = df[col].fillna(df[col].median())
+        for col in df.select_dtypes(include='object').columns:
+            df[col] = df[col].fillna(df[col].mode()[0])
+        feature_cols = d.get('feature_cols', FEATURE_COLS)
+        X = df[feature_cols]
+        y = df['Price_in_thousands']
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+        y_pred = d['model'].predict(X_test)
+        stats = {
+            'r2'     : round(float(r2_score(y_test, y_pred)), 4),
+            'rmse'   : round(float(np.sqrt(mean_squared_error(y_test, y_pred))), 4),
+            'n_train': len(X_train),
+            'n_test' : len(X_test),
+        }
+        return d['model'], stats
 
-    # Train langsung dari CSV
+    # Kalau model.pkl tidak ada → train langsung dari CSV
     csv_path = os.path.join(os.path.dirname(__file__), 'Car_sales.xls')
     df = pd.read_csv(csv_path)
     df.dropna(how='all', inplace=True)
@@ -289,12 +313,12 @@ def load_model():
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
     stats = {
-        'r2'  : round(float(r2_score(y_test, y_pred)), 4),
-        'rmse': round(float(np.sqrt(mean_squared_error(y_test, y_pred))), 4),
-        'n_train': len(X_train), 'n_test': len(X_test),
+        'r2'     : round(float(r2_score(y_test, y_pred)), 4),
+        'rmse'   : round(float(np.sqrt(mean_squared_error(y_test, y_pred))), 4),
+        'n_train': len(X_train),
+        'n_test' : len(X_test),
     }
-    with open(pkl_path, 'wb') as f:
-        pickle.dump({'model': model, 'feature_cols': FEATURE_COLS, 'stats': stats}, f)
+    joblib.dump({'model': model, 'feature_cols': FEATURE_COLS}, 'model.pkl')
     return model, stats
 
 model, stats = load_model()

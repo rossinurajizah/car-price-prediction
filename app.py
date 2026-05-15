@@ -341,20 +341,6 @@ html, body, [class*="css"] {
     overflow: hidden;
 }
 
-.identity::before {
-    content: 'DEVELOPER';
-    position: absolute;
-    right: -8px;
-    top: 50%;
-    transform: translateY(-50%) rotate(90deg);
-    font-family: 'Bebas Neue', cursive;
-    font-size: 3.5rem;
-    color: rgba(255,255,255,0.04);
-    letter-spacing: 4px;
-    white-space: nowrap;
-    pointer-events: none;
-}
-
 .identity-top {
     display: flex;
     align-items: center;

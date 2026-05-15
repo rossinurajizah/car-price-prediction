@@ -122,7 +122,7 @@ html, body, [class*="css"] {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 16px 22px;
+    padding: 16px 8px;
     border-bottom: 1px solid #ddd8cc;
 }
 
@@ -143,10 +143,6 @@ html, body, [class*="css"] {
 .panel-body { padding: 22px; }
 
 /* ── INPUT LABELS ── */
-.stNumberInput {
-    padding: 0 22px;
-}
-
 .stNumberInput label {
     font-family: 'IBM Plex Mono', monospace !important;
     font-size: 0.62rem !important;
@@ -178,7 +174,6 @@ html, body, [class*="css"] {
     gap: 8px;
     margin-top: 3px;
     margin-bottom: 10px;
-    padding: 0 22px;
 }
 
 .corr-track {
@@ -492,8 +487,24 @@ html, body, [class*="css"] {
     color: #bbb;
 }
 
-div[data-testid="column"] { padding: 0 6px; }
-.element-container { margin-bottom: 0 !important; }
+/* ── FORCE ALIGNMENT pada streamlit containers ── */
+section[data-testid="stSidebar"] { display: none; }
+
+div[data-testid="stVerticalBlock"] > div[data-testid="stHorizontalBlock"] {
+    padding: 0 !important;
+}
+
+/* Target semua number input container agar sejajar dengan panel header */
+div[data-testid="stNumberInput"] {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+/* Paksa columns dalam panel kiri agar tidak ada offset */
+div[data-testid="column"] > div[data-testid="stVerticalBlock"] {
+    padding: 0 !important;
+    gap: 0 !important;
+}
 
 /* ── RESPONSIVE MOBILE ── */
 @media (max-width: 768px) {
@@ -683,14 +694,13 @@ col_left, col_right = st.columns([1.5, 1], gap="medium")
 st.markdown("<style> .block-container { padding: 0 2rem 2rem !important; } </style>", unsafe_allow_html=True)
 
 with col_left:
+    # Panel header sebagai HTML mandiri
     st.markdown("""
-    <div style="margin:0 10px">
-    <div class="panel">
-        <div class="panel-header">
-            <span class="panel-title">⚙ Spesifikasi Kendaraan</span>
-            <span class="panel-number">01</span>
-        </div>
-        <div class="panel-body">
+    <div class="panel-header" style="border:1px solid #ddd8cc; border-bottom:1px solid #ddd8cc; background:#fff; margin-bottom:0;">
+        <span class="panel-title">⚙ Spesifikasi Kendaraan</span>
+        <span class="panel-number">01</span>
+    </div>
+    <div style="border:1px solid #ddd8cc; border-top:none; background:#fff; padding:16px 8px 8px;">
     """, unsafe_allow_html=True)
 
     inputs = {}
@@ -719,7 +729,7 @@ with col_left:
             </div>""", unsafe_allow_html=True)
             inputs[key] = val
 
-    st.markdown("</div></div></div>", unsafe_allow_html=True)
+    st.markdown("</div>", unsafe_allow_html=True)
 
     st.markdown("<div style='height:12px'></div>", unsafe_allow_html=True)
 

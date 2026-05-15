@@ -8,304 +8,295 @@ from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, r2_score
 
-# ── Page Config ───────────────────────────────────────────────────────────────
 st.set_page_config(
-    page_title="AutoPrice — Prediksi Harga Mobil",
+    page_title="Prediksi Harga Mobil",
     page_icon="🚗",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
 
-# ── Custom CSS ────────────────────────────────────────────────────────────────
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-/* Global */
-html, body, [class*="css"] {
-    font-family: 'DM Sans', sans-serif;
-}
+html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
 
-.stApp {
-    background: #0b0f1a;
-    color: #e8eaf0;
-}
+.stApp { background: #0d1117; color: #e6edf3; }
 
-/* Hide default streamlit elements */
 #MainMenu, footer, header { visibility: hidden; }
-.block-container { padding: 2rem 3rem 4rem; }
+.block-container { padding: 1.5rem 2rem 3rem; max-width: 1100px; margin: auto; }
 
-/* Header */
-.hero-header {
-    background: linear-gradient(135deg, #131929 0%, #1a2236 100%);
-    border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 20px;
-    padding: 2.5rem 3rem;
-    margin-bottom: 2rem;
-    position: relative;
-    overflow: hidden;
-}
-
-.hero-header::before {
-    content: '';
-    position: absolute;
-    top: -50px; right: -50px;
-    width: 300px; height: 300px;
-    background: radial-gradient(circle, rgba(245,166,35,0.08) 0%, transparent 70%);
-    border-radius: 50%;
-}
-
-.hero-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 2.2rem;
-    font-weight: 800;
-    background: linear-gradient(90deg, #ffffff 40%, #f5a623);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    margin: 0;
-    letter-spacing: -1px;
-}
-
-.hero-sub {
-    color: #6b7592;
-    font-size: 0.9rem;
-    margin-top: 6px;
-}
-
-/* Stat pills */
-.stats-row {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-    margin-top: 1.5rem;
-}
-
-.stat-pill {
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 999px;
-    padding: 7px 16px;
-    font-size: 0.8rem;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
-.dot-green { background: #27d98b; box-shadow: 0 0 8px #27d98b; }
-.dot-blue  { background: #4a9eff; box-shadow: 0 0 8px #4a9eff; }
-.dot-amber { background: #f5a623; box-shadow: 0 0 8px #f5a623; }
-
-/* Cards */
-.card {
-    background: #131929;
-    border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 16px;
-    padding: 1.8rem;
-    margin-bottom: 1.5rem;
-}
-
-.card-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 1rem;
-    font-weight: 700;
-    margin-bottom: 1.2rem;
-    color: #e8eaf0;
-}
-
-/* Result box */
-.result-box {
-    background: linear-gradient(135deg, #131929 0%, #1a2236 100%);
-    border: 1px solid rgba(245,166,35,0.2);
-    border-radius: 20px;
-    padding: 2rem;
+/* ── Header ── */
+.top-header {
     text-align: center;
-    position: relative;
-    overflow: hidden;
-}
-
-.result-box::before {
-    content: '';
-    position: absolute;
-    top: -30px; left: -30px;
-    width: 200px; height: 200px;
-    background: radial-gradient(circle, rgba(245,166,35,0.06) 0%, transparent 70%);
-}
-
-.result-label {
-    font-size: 0.72rem;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    color: #6b7592;
-    font-weight: 600;
-    margin-bottom: 0.8rem;
-}
-
-.result-price {
-    font-family: 'Syne', sans-serif;
-    font-size: 3rem;
-    font-weight: 800;
-    background: linear-gradient(90deg, #f5a623, #e8452c);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    line-height: 1;
-    margin-bottom: 0.4rem;
-}
-
-.result-idr {
-    color: #6b7592;
-    font-size: 0.9rem;
+    padding: 1.5rem 0 1rem;
     margin-bottom: 1.5rem;
 }
-
-.divider {
-    height: 1px;
-    background: rgba(255,255,255,0.07);
-    margin: 1.2rem 0;
+.top-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #e6edf3;
+    letter-spacing: -0.5px;
+}
+.top-sub {
+    font-size: 0.82rem;
+    color: #7d8590;
+    margin-top: 4px;
+}
+.live-badge {
+    display: inline-block;
+    background: #1f6feb;
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    margin-left: 8px;
+    vertical-align: middle;
 }
 
-.spec-row {
+/* ── Panel ── */
+.panel {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 12px;
+    padding: 1.4rem;
+}
+.panel-title {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #7d8590;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* ── Input row ── */
+.inp-row {
+    margin-bottom: 1.1rem;
+}
+.inp-label {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 5px 0;
+    margin-bottom: 5px;
 }
-
-.spec-key { color: #6b7592; font-size: 0.8rem; }
-.spec-val { color: #e8eaf0; font-size: 0.85rem; font-weight: 500; }
-
-/* Identity card */
-.identity-card {
-    background: linear-gradient(135deg, rgba(74,158,255,0.08), rgba(39,217,139,0.06));
-    border: 1px solid rgba(74,158,255,0.2);
-    border-radius: 16px;
-    padding: 1.5rem;
-    text-align: center;
-    margin-top: 1rem;
-}
-
-.id-label {
-    font-size: 0.72rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: #4a9eff;
-    font-weight: 700;
-    margin-bottom: 0.6rem;
-}
-
-.id-name {
-    font-family: 'Syne', sans-serif;
-    font-size: 1rem;
-    font-weight: 700;
-    color: white;
-}
-
-.id-npm { color: #6b7592; font-size: 0.85rem; margin-top: 3px; }
-
-/* Corr bar */
-.corr-wrap {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 4px;
+.inp-name { font-size: 0.82rem; color: #c9d1d9; }
+.inp-val {
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: #21262d;
+    border: 1px solid #30363d;
+    border-radius: 999px;
+    padding: 2px 10px;
+    color: #f0b429;
 }
 .corr-bar-bg {
-    flex: 1;
     height: 3px;
-    background: #1a2236;
+    background: #21262d;
     border-radius: 3px;
+    margin-top: 4px;
     overflow: hidden;
 }
 .corr-bar-fill {
     height: 100%;
-    background: linear-gradient(90deg, #4a9eff, #27d98b);
     border-radius: 3px;
 }
-.corr-val { font-size: 0.7rem; color: #6b7592; white-space: nowrap; }
 
-/* Streamlit input overrides */
-.stNumberInput label { color: #6b7592 !important; font-size: 0.78rem !important; text-transform: uppercase; letter-spacing: 0.6px; }
-.stNumberInput input {
-    background: #1a2236 !important;
-    border: 1px solid rgba(255,255,255,0.07) !important;
-    border-radius: 10px !important;
-    color: #e8eaf0 !important;
+/* ── Price box ── */
+.price-box {
+    background: linear-gradient(135deg, #1c2333, #1f2d3d);
+    border: 1px solid #1f6feb44;
+    border-radius: 10px;
+    text-align: center;
+    padding: 1.4rem 1rem;
+    margin-bottom: 1rem;
 }
-.stNumberInput input:focus { border-color: #f5a623 !important; }
+.price-label {
+    font-size: 0.65rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #7d8590;
+    margin-bottom: 6px;
+}
+.price-usd {
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: #f0b429;
+    line-height: 1;
+}
+.price-idr {
+    font-size: 0.8rem;
+    color: #7d8590;
+    margin-top: 5px;
+}
+.price-segment {
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 3px 12px;
+    border-radius: 999px;
+}
 
+/* ── Segment bar ── */
+.seg-wrap { margin: 0.8rem 0; }
+.seg-title { font-size: 0.7rem; color: #7d8590; margin-bottom: 6px; font-weight: 600; letter-spacing: 0.8px; }
+.seg-bar {
+    height: 6px;
+    background: linear-gradient(90deg, #238636, #f0b429, #1f6feb);
+    border-radius: 3px;
+    position: relative;
+    margin-bottom: 4px;
+}
+.seg-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.65rem;
+    color: #7d8590;
+}
+
+/* ── Spec grid ── */
+.spec-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 1rem;
+}
+.spec-cell {
+    background: #21262d;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    padding: 8px 10px;
+}
+.spec-cell-label { font-size: 0.68rem; color: #7d8590; margin-bottom: 3px; }
+.spec-cell-val { font-size: 0.88rem; font-weight: 600; color: #e6edf3; }
+
+/* ── Metric grid ── */
+.metric-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 1rem;
+}
+.metric-cell {
+    background: #21262d;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+}
+.metric-val { font-size: 1.2rem; font-weight: 700; color: #58a6ff; }
+.metric-label { font-size: 0.68rem; color: #7d8590; margin-top: 2px; }
+
+/* ── Identity ── */
+.identity-box {
+    background: #21262d;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    padding: 12px;
+    text-align: center;
+}
+.identity-title { font-size: 0.65rem; color: #7d8590; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+.identity-name { font-size: 0.9rem; font-weight: 600; color: #e6edf3; }
+.identity-npm { font-size: 0.78rem; color: #7d8590; margin-top: 2px; }
+
+/* ── Button ── */
 .stButton button {
     width: 100%;
-    background: linear-gradient(135deg, #f5a623, #e8452c) !important;
-    color: white !important;
-    border: none !important;
-    border-radius: 10px !important;
-    padding: 0.7rem !important;
-    font-family: 'Syne', sans-serif !important;
-    font-weight: 700 !important;
-    font-size: 0.95rem !important;
-    letter-spacing: 0.3px !important;
+    background: #21262d !important;
+    color: #e6edf3 !important;
+    border: 1px solid #30363d !important;
+    border-radius: 8px !important;
+    padding: 0.65rem !important;
+    font-family: 'Inter', sans-serif !important;
+    font-weight: 600 !important;
+    font-size: 0.88rem !important;
+    margin-top: 0.5rem !important;
     transition: all 0.2s !important;
 }
+.stButton button:hover {
+    background: #30363d !important;
+    border-color: #58a6ff !important;
+    color: #58a6ff !important;
+}
 
-.stButton button:hover { opacity: 0.9; transform: translateY(-1px); }
+/* ── Number input overrides ── */
+.stNumberInput label {
+    color: #c9d1d9 !important;
+    font-size: 0.8rem !important;
+    font-weight: 500 !important;
+}
+.stNumberInput input {
+    background: #21262d !important;
+    border: 1px solid #30363d !important;
+    border-radius: 8px !important;
+    color: #e6edf3 !important;
+    font-size: 0.9rem !important;
+}
+.stNumberInput input:focus {
+    border-color: #58a6ff !important;
+    box-shadow: 0 0 0 2px rgba(88,166,255,0.15) !important;
+}
 
-div[data-testid="column"] { padding: 0 0.5rem; }
+div[data-testid="column"] { padding: 0 0.4rem; }
 </style>
 """, unsafe_allow_html=True)
 
-# ── Load / Train Model ────────────────────────────────────────────────────────
+# ── Model ─────────────────────────────────────────────────────────────────────
 FEATURE_COLS = ['Engine_size','Horsepower','Wheelbase','Width','Length','Curb_weight','Fuel_efficiency']
 FEATURE_META = {
-    'Engine_size'    : dict(label='Engine Size',     unit='Liter', min=1.0,  max=8.0,  step=0.1,  default=2.98),
-    'Horsepower'     : dict(label='Horsepower',      unit='HP',    min=50,   max=500,  step=1.0,  default=156.5),
-    'Wheelbase'      : dict(label='Wheelbase',       unit='inch',  min=90.0, max=140., step=0.1,  default=114.64),
-    'Width'          : dict(label='Width',           unit='inch',  min=60.0, max=90.0, step=0.1,  default=72.22),
-    'Length'         : dict(label='Length',          unit='inch',  min=140., max=230., step=0.1,  default=195.12),
-    'Curb_weight'    : dict(label='Curb Weight',     unit='K lbs', min=1.0,  max=6.0,  step=0.01, default=3.34),
-    'Fuel_efficiency': dict(label='Fuel Efficiency', unit='mpg',   min=10.0, max=60.0, step=0.1,  default=24.1),
+    'Engine_size'    : dict(label='Engine Size',     unit='L',     min=1.0,  max=8.0,  step=0.1,  default=2.98,   color='#f0b429'),
+    'Horsepower'     : dict(label='Horsepower',      unit='HP',    min=50,   max=500,  step=1.0,  default=156.5,  color='#f0b429'),
+    'Wheelbase'      : dict(label='Wheelbase',       unit='in',    min=90.0, max=140., step=0.1,  default=114.64, color='#58a6ff'),
+    'Width'          : dict(label='Width',           unit='in',    min=60.0, max=90.0, step=0.1,  default=72.22,  color='#58a6ff'),
+    'Length'         : dict(label='Length',          unit='in',    min=140., max=230., step=0.1,  default=195.12, color='#58a6ff'),
+    'Curb_weight'    : dict(label='Curb Weight',     unit='K lbs', min=1.0,  max=6.0,  step=0.01, default=3.34,   color='#3fb950'),
+    'Fuel_efficiency': dict(label='Fuel Efficiency', unit='mpg',   min=10.0, max=60.0, step=0.1,  default=24.1,   color='#da3633'),
 }
 KORRELASI = {'Engine_size':0.626,'Horsepower':0.837,'Wheelbase':0.489,'Width':0.441,'Length':0.398,'Curb_weight':0.523,'Fuel_efficiency':-0.492}
 
 @st.cache_resource
 def load_model():
     pkl_path = os.path.join(os.path.dirname(__file__), 'model.pkl')
-    if os.path.exists(pkl_path):
-        # Support joblib (dari Colab) maupun pickle
-        try:
-            d = joblib.load(pkl_path)
-        except Exception:
-            with open(pkl_path, 'rb') as f:
-                d = pickle.load(f)
-        # Hitung stats dari model yang sudah ada
-        csv_path = os.path.join(os.path.dirname(__file__), 'Car_sales.xls')
+    csv_path = os.path.join(os.path.dirname(__file__), 'Car_sales.xls')
+
+    def get_stats(model, csv_path):
         df = pd.read_csv(csv_path)
         df.dropna(how='all', inplace=True)
         for col in df.select_dtypes(include=[np.number]).columns:
             df[col] = df[col].fillna(df[col].median())
         for col in df.select_dtypes(include='object').columns:
             df[col] = df[col].fillna(df[col].mode()[0])
-        feature_cols = d.get('feature_cols', FEATURE_COLS)
-        X = df[feature_cols]
+        X = df[FEATURE_COLS]
         y = df['Price_in_thousands']
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-        y_pred = d['model'].predict(X_test)
-        stats = {
+        y_pred = model.predict(X_test)
+        return {
             'r2'     : round(float(r2_score(y_test, y_pred)), 4),
             'rmse'   : round(float(np.sqrt(mean_squared_error(y_test, y_pred))), 4),
             'n_train': len(X_train),
-            'n_test' : len(X_test),
         }
+
+    if os.path.exists(pkl_path):
+        try:
+            d = joblib.load(pkl_path)
+        except Exception:
+            with open(pkl_path, 'rb') as f:
+                d = pickle.load(f)
+        stats = get_stats(d['model'], csv_path)
         return d['model'], stats
 
-    # Kalau model.pkl tidak ada → train langsung dari CSV
-    csv_path = os.path.join(os.path.dirname(__file__), 'Car_sales.xls')
     df = pd.read_csv(csv_path)
     df.dropna(how='all', inplace=True)
     for col in df.select_dtypes(include=[np.number]).columns:
         df[col] = df[col].fillna(df[col].median())
     for col in df.select_dtypes(include='object').columns:
         df[col] = df[col].fillna(df[col].mode()[0])
-
     X = df[FEATURE_COLS]
     y = df['Price_in_thousands']
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -316,9 +307,8 @@ def load_model():
         'r2'     : round(float(r2_score(y_test, y_pred)), 4),
         'rmse'   : round(float(np.sqrt(mean_squared_error(y_test, y_pred))), 4),
         'n_train': len(X_train),
-        'n_test' : len(X_test),
     }
-    joblib.dump({'model': model, 'feature_cols': FEATURE_COLS}, 'model.pkl')
+    joblib.dump({'model': model, 'feature_cols': FEATURE_COLS}, pkl_path)
     return model, stats
 
 model, stats = load_model()
@@ -326,122 +316,137 @@ r2   = stats.get('r2',   0.734)
 rmse = stats.get('rmse', 9.561)
 n_tr = stats.get('n_train', 125)
 
-# ── HERO HEADER ───────────────────────────────────────────────────────────────
+# ── Header ────────────────────────────────────────────────────────────────────
 st.markdown(f"""
-<div class="hero-header">
-    <div style="display:flex; align-items:center; gap:16px;">
-        <div style="font-size:2.8rem;">🚗</div>
-        <div>
-            <div class="hero-title">AutoPrice Predictor</div>
-            <div class="hero-sub">Sistem Prediksi Harga Mobil — Final Project Matakuliah Sains Data</div>
-        </div>
+<div class="top-header">
+    <div class="top-title">
+        Prediksi Harga Mobil
+        <span class="live-badge">LIVE</span>
     </div>
-    <div class="stats-row">
-        <div class="stat-pill"><span class="dot dot-green"></span> Linear Regression</div>
-        <div class="stat-pill"><span class="dot dot-blue"></span> R² Score <strong style="color:#fff;margin-left:4px">{r2}</strong></div>
-        <div class="stat-pill"><span class="dot dot-amber"></span> RMSE <strong style="color:#fff;margin-left:4px">${rmse}K</strong></div>
-        <div class="stat-pill"><span class="dot dot-green"></span> Data Training <strong style="color:#fff;margin-left:4px">{n_tr} baris</strong></div>
-    </div>
+    <div class="top-sub">Matakuliah Sains Data — Final Project</div>
 </div>
 """, unsafe_allow_html=True)
 
-# ── MAIN LAYOUT ───────────────────────────────────────────────────────────────
-col_left, col_right = st.columns([1.4, 1], gap="medium")
+# ── Layout ────────────────────────────────────────────────────────────────────
+col_left, col_right = st.columns([1, 1.1], gap="medium")
 
 with col_left:
-    st.markdown('<div class="card"><div class="card-title">⚙️ Spesifikasi Kendaraan</div>', unsafe_allow_html=True)
+    st.markdown('<div class="panel"><div class="panel-title">⚙ Spesifikasi Mobil</div>', unsafe_allow_html=True)
 
     inputs = {}
-    c1, c2 = st.columns(2)
-    cols = [c1, c2]
-    for i, (key, meta) in enumerate(FEATURE_META.items()):
-        with cols[i % 2]:
-            val = st.number_input(
-                f"{meta['label']} ({meta['unit']})",
-                min_value=float(meta['min']),
-                max_value=float(meta['max']),
-                value=float(meta['default']),
-                step=float(meta['step']),
-                key=key,
-                format="%.2f" if meta['step'] < 1 else "%.1f"
-            )
-            pct = min(abs(KORRELASI[key]) * 100, 100)
-            st.markdown(f"""
-            <div class="corr-wrap">
-                <div class="corr-bar-bg"><div class="corr-bar-fill" style="width:{pct}%"></div></div>
-                <span class="corr-val">r={KORRELASI[key]}</span>
-            </div>""", unsafe_allow_html=True)
-            inputs[key] = val
+    for key, meta in FEATURE_META.items():
+        val = st.number_input(
+            f"{meta['label']} ({meta['unit']})",
+            min_value=float(meta['min']),
+            max_value=float(meta['max']),
+            value=float(meta['default']),
+            step=float(meta['step']),
+            key=key,
+            format="%.2f" if meta['step'] < 1 else "%.1f"
+        )
+        pct = min(abs(KORRELASI[key]) * 100, 100)
+        st.markdown(f"""
+        <div class="corr-bar-bg">
+            <div class="corr-bar-fill" style="width:{pct}%;background:{meta['color']};"></div>
+        </div>""", unsafe_allow_html=True)
+        inputs[key] = val
 
     st.markdown('</div>', unsafe_allow_html=True)
-    st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
-
-    btn_col1, btn_col2 = st.columns(2)
-    with btn_col1:
-        hitung = st.button("🔍 Hitung Harga Mobil", use_container_width=True)
-    with btn_col2:
-        reset = st.button("↺ Reset ke Rekomendasi", use_container_width=True)
-
-    if reset:
-        for key, meta in FEATURE_META.items():
-            st.session_state[key] = float(meta['default'])
-        st.rerun()
+    hitung = st.button("▶  Hitung Harga Mobil", use_container_width=True)
 
 with col_right:
-    # Result
     if hitung:
         X_input = pd.DataFrame([inputs])
         pred_k   = float(model.predict(X_input)[0])
         pred_usd = pred_k * 1000
         pred_idr = pred_usd * 17_603
 
-        specs_html = ""
+        # Segment
+        if pred_usd < 15000:
+            seg_label, seg_color, seg_bg, seg_pos = "Budget", "#3fb950", "rgba(63,185,80,0.15)", "10%"
+        elif pred_usd < 35000:
+            seg_label, seg_color, seg_bg, seg_pos = "Menengah", "#f0b429", "rgba(240,180,41,0.15)", "50%"
+        else:
+            seg_label, seg_color, seg_bg, seg_pos = "Premium", "#58a6ff", "rgba(88,166,255,0.15)", "90%"
+
+        specs_cells = ""
         for key, meta in FEATURE_META.items():
-            specs_html += f"""
-            <div class="spec-row">
-                <span class="spec-key">{meta['label']}</span>
-                <span class="spec-val">{inputs[key]:.2f} {meta['unit']}</span>
+            specs_cells += f"""
+            <div class="spec-cell">
+                <div class="spec-cell-label">{meta['label']}</div>
+                <div class="spec-cell-val">{inputs[key]:.2f} {meta['unit']}</div>
             </div>"""
 
         st.markdown(f"""
-        <div class="result-box">
-            <div class="result-label">Perkiraan Harga Mobil</div>
-            <div class="result-price">${pred_usd:,.0f}</div>
-            <div class="result-idr">≈ Rp {pred_idr:,.0f}</div>
-            <div class="divider"></div>
-            {specs_html}
-            <div class="divider"></div>
-            <div style="font-size:0.72rem;color:#6b7592;">* Kurs USD/IDR: Rp 17.603</div>
-        </div>
-        """, unsafe_allow_html=True)
-        st.success(f"✅ Prediksi berhasil! Harga: ${pred_usd:,.0f}")
+        <div class="panel">
+            <div class="panel-title">$ Perkiraan Harga</div>
 
-    else:
-        st.markdown("""
-        <div class="result-box" style="padding: 3rem 2rem;">
-            <div style="font-size:3rem; margin-bottom:12px;">💡</div>
-            <div style="color:#6b7592; font-size:0.9rem;">
-                Masukkan spesifikasi mobil<br>lalu klik <strong style="color:#f5a623">Hitung Harga Mobil</strong>
+            <div class="price-box">
+                <div class="price-label">Estimasi Harga Mobil</div>
+                <div class="price-usd">${pred_usd:,.0f}</div>
+                <div class="price-idr">≈ Rp {pred_idr:,.0f}</div>
+                <span class="price-segment" style="background:{seg_bg};color:{seg_color};">
+                    ● Segmen {seg_label}
+                </span>
+            </div>
+
+            <div class="seg-wrap">
+                <div class="seg-title">Segmen Harga</div>
+                <div class="seg-bar">
+                    <div style="position:absolute;top:-3px;left:{seg_pos};width:12px;height:12px;background:{seg_color};border-radius:50%;border:2px solid #0d1117;transform:translateX(-50%);"></div>
+                </div>
+                <div class="seg-labels"><span>Budget</span><span>Menengah</span><span>Premium</span></div>
+            </div>
+
+            <div class="panel-title" style="margin-top:1rem;">Ringkasan Spesifikasi</div>
+            <div class="spec-grid">{specs_cells}</div>
+
+            <div class="panel-title">Performa Model</div>
+            <div class="metric-grid">
+                <div class="metric-cell">
+                    <div class="metric-val">{r2:.4f}</div>
+                    <div class="metric-label">R² Score<br>{r2*100:.1f}% akurasi</div>
+                </div>
+                <div class="metric-cell">
+                    <div class="metric-val">${rmse:.2f}K</div>
+                    <div class="metric-label">RMSE<br>rata-rata error</div>
+                </div>
+            </div>
+
+            <div class="identity-box">
+                <div class="identity-title">Sistem ini dibuat oleh</div>
+                <div class="identity-name">Rossi Nur Ajizah</div>
+                <div class="identity-npm">NPM · 237006003</div>
             </div>
         </div>
         """, unsafe_allow_html=True)
 
-    # Identity card
-    st.markdown("""
-    <div class="identity-card">
-        <div class="id-label"> Sistem Ini Dibuat Oleh</div>
-        <div class="id-name">Rossi Nur Ajizah</div>
-        <div class="id-npm">NPM : 237006003</div>
-    </div>
+    else:
+        st.markdown(f"""
+        <div class="panel">
+            <div class="panel-title">$ Perkiraan Harga</div>
 
-    <div class="card" style="margin-top:1rem; padding: 1.2rem 1.5rem;">
-        <div class="card-title" style="font-size:0.85rem; margin-bottom:0.8rem">📊 Tentang Model</div>
-        <div style="font-size:0.8rem; color:#6b7592; line-height:1.7">
-            Model <strong style="color:#e8eaf0">Linear Regression</strong> dilatih menggunakan
-            dataset <em>Car_sales.xls</em>.<br><br>
-            Variabel paling berpengaruh:
-            <strong style="color:#f5a623">Horsepower (r=0.837)</strong>.<br><br>
-            <span style="color:#27d98b">R² = {r2_pct:.1f}%</span> variasi harga dijelaskan model ini.
+            <div class="price-box" style="padding:2.5rem 1rem;">
+                <div style="font-size:2rem;margin-bottom:8px;">—</div>
+                <div class="price-label">Masukkan spesifikasi lalu klik<br>Hitung Harga Mobil</div>
+            </div>
+
+            <div class="panel-title" style="margin-top:1.2rem;">Performa Model</div>
+            <div class="metric-grid">
+                <div class="metric-cell">
+                    <div class="metric-val">{r2:.4f}</div>
+                    <div class="metric-label">R² Score<br>{r2*100:.1f}% akurasi</div>
+                </div>
+                <div class="metric-cell">
+                    <div class="metric-val">${rmse:.2f}K</div>
+                    <div class="metric-label">RMSE<br>rata-rata error</div>
+                </div>
+            </div>
+
+            <div class="identity-box">
+                <div class="identity-title">Sistem ini dibuat oleh</div>
+                <div class="identity-name">Rossi Nur Ajizah</div>
+                <div class="identity-npm">NPM · 237006003</div>
+            </div>
         </div>
-    </div>
-    """.format(r2_pct=r2*100), unsafe_allow_html=True)
+        """, unsafe_allow_html=True)

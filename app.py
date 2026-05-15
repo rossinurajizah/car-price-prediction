@@ -450,6 +450,64 @@ html, body, [class*="css"] {
 
 div[data-testid="column"] { padding: 0 6px; }
 .element-container { margin-bottom: 0 !important; }
+
+/* ── RESPONSIVE MOBILE ── */
+@media (max-width: 768px) {
+    .block-container { padding: 0 !important; }
+
+    /* Topbar: stack vertically */
+    .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 14px 16px;
+    }
+    .topbar > div:last-child {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        width: 100%;
+    }
+    .topbar > div:last-child > div[style*="width:1px"] {
+        display: none !important;
+    }
+
+    /* Panels full width */
+    .panel { margin: 0 0 12px 0; }
+    .panel-body { padding: 12px; }
+
+    /* Input grid: 1 kolom di mobile */
+    div[data-testid="column"] { padding: 0 2px; }
+
+    /* Result hero font lebih kecil */
+    .result-usd { font-size: 2.6rem !important; }
+    .result-idr { font-size: 0.65rem !important; }
+
+    /* Spec grid: 1 kolom */
+    .spec-grid { grid-template-columns: 1fr 1fr !important; gap: 6px !important; }
+    .spec-list { padding: 0 12px 12px !important; }
+    .seg-bar { margin: 12px !important; }
+
+    /* Identity */
+    .identity { margin: 0 !important; }
+    .identity-meta { flex-wrap: wrap; gap: 12px; }
+
+    /* Model info */
+    .model-info { margin: 0 0 0 0 !important; }
+
+    /* Buttons */
+    .stButton button { font-size: 0.72rem !important; padding: 0.6rem !important; }
+
+    /* Topbar brand smaller */
+    .topbar-brand { font-size: 1.5rem !important; }
+}
+
+@media (max-width: 480px) {
+    .result-usd { font-size: 2rem !important; }
+    .spec-grid { grid-template-columns: 1fr !important; }
+    .identity-meta { gap: 8px; }
+    .mstat-val { font-size: 1rem !important; }
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -522,6 +580,10 @@ model, stats = load_model()
 r2   = stats.get('r2',   0.734)
 rmse = stats.get('rmse', 9.561)
 n_tr = stats.get('n_train', 125)
+
+st.markdown("""
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+""", unsafe_allow_html=True)
 
 # ── TOP BAR ───────────────────────────────────────────────────────────────────
 st.markdown(f"""
